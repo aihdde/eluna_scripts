@@ -21,7 +21,7 @@ local GOSSIP_ICON_DOT             = 10                   -- 加入战场，战�
 --数据库
 local inSQL=[[INSERT IGNORE INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `name`, `subname`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `speed_swim`, `speed_flight`, `detection_range`, `scale`, `rank`, `dmgschool`, `DamageModifier`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `dynamicflags`, `family`, `trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, `PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `HoverHeight`, `HealthModifier`, `ManaModifier`, `ArmorModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `spell_school_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES (]]..NPCID..[[, 0, 0, 0, 0, 0, '兜售的多玛', '随身商人', NULL, 0, 80, 80, 2, 35, 129, 1, 1.14286, 1, 1, 20, 1, 0, 0, 1, 2000, 2000, 1, 1, 1, 0, 2048, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, '', 12340);]]
 -- local unSQL="DELETE FROM `creature_template` WHERE `entry`="..NPCID..";"
-local inSQL=[[INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES (190099, 0, 25622, 1, 1, 0);]]
+local inSQL=[[INSERT IGNORE INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES (]]..NPCID..[[, 0, 25622, 1, 1, 0);]]
 
 local function Glyph(index)
     return 1*OFFSET + index
@@ -41,6 +41,10 @@ end
 
 local function T3(index)
     return 5*OFFSET + index
+end
+
+local function T10(index)
+    return 6*OFFSET + index
 end
 
 -- 宝石
@@ -322,6 +326,50 @@ local T3Outfits = {
     },
 }
 
+-- T10 套装
+local T10Outfits = {
+    -- 战士 51225-51229 51220-51224
+    [T10(1)] = {
+        51220, 51221, 51222, 51223, 51224, 51225, 51226, 51227, 51228, 51229,
+    },
+    -- 法师 51280-51284
+    [T10(2)] = {
+        51280, 51281, 51282, 51283, 51284,
+    },
+    -- 牧 51260-51264 51255-51259
+    [T10(3)] = {
+        51255, 51256, 51257, 51258, 51259, 51260, 51261, 51262, 51263, 51264,
+    },
+    -- 骑 51270-51274 51265-51269 51275-51279
+    [T10(4)] = {
+        51265, 51266, 51267, 51268, 51269, 51270, 51271, 51272, 51273, 51274, 51275, 51276, 51277, 51278, 51279,
+    },
+    -- 德 51290-51294 51295-51299 51300-51304
+    [T10(5)] = {
+        51290, 51291, 51292, 51293, 51294, 51295, 51296, 51297, 51298, 51299, 51300, 51301, 51302, 51303, 51304,
+    },
+    -- 猎 51285-51289
+    [T10(6)] = {
+        51285, 51286, 51287, 51288, 51289,
+    },
+    -- 术士 51230-51234
+    [T10(7)] = {
+        51230, 51231, 51232, 51233, 51234,
+    },
+    -- 盗贼 51250-51254
+    [T10(8)] = {
+        51250, 51251, 51252, 51253, 51254,
+    },
+    -- 萨满 51235-51239 51240-51244 51245-51249
+    [T10(9)] = {
+        51235, 51236, 51237, 51238, 51239, 51240, 51241, 51242, 51243, 51244, 51245, 51246, 51247, 51248, 51249,
+    },
+    -- 死亡骑士 51310-51314 51305-51309
+    [T10(10)] = {
+        51305, 51306, 51307, 51308, 51309, 51310, 51311, 51312, 51313, 51314,
+    },
+}
+
 --菜单
 local Menus = {
 	[0]={
@@ -330,7 +378,7 @@ local Menus = {
         {"材料",3},
         {"钥匙",4},
         {"T3套装",5},
-	{"T12套装",6}
+        {"T10套装",6},
 		-- 无2级菜单
         {"施法材料",Key(4)},
         {"传家宝",Key(5)},
@@ -394,16 +442,17 @@ local Menus = {
         {"萨满",T3(9)},
         {"返回上一页",0,GOSSIP_ICON_TALK},
     },
-    [6]={--T12套装
-	{"战士",T12(1)},
-	{"法师",T12(2)},
-	{"牧师",T12(3)},
-        {"圣骑士",T12(4)},
-        {"德鲁伊",T12(5)},
-        {"猎人",T12(6)},
-        {"术士",T12(7)},
-        {"潜行者",T12(8)},
-        {"萨满",T12(9)},
+    [6]={--T10套装
+	    {"战士",T10(1)},
+	    {"法师",T10(2)},
+	    {"牧师",T10(3)},
+        {"圣骑士",T10(4)},
+        {"德鲁伊",T10(5)},
+        {"猎人",T10(6)},
+        {"术士",T10(7)},
+        {"潜行者",T10(8)},
+        {"萨满",T10(9)},
+        {"死亡骑士",T10(10)},
         {"返回上一页",0,GOSSIP_ICON_TALK},
      }
 }
@@ -424,7 +473,7 @@ local GOODS={--货物id号
 	},
 	-- 其他
 	[Key(6)]={
-		-- 23162, -- 36格包
+		23162, -- 36格包
         38145, -- 12格包 SELECT entry,BuyPrice FROM item_template WHERE ContainerSlots=12;
 		2515, 2519, -- 猎人的箭和弹药
 		1132, 5665, 2411, 2414, -- 60% 坐骑
@@ -448,6 +497,7 @@ MergeTable(GOODS, Glyphs)
 MergeTable(GOODS, Keys)
 MergeTable(GOODS, Menus)
 MergeTable(GOODS, T3Outfits)
+MergeTable(GOODS, T10Outfits)
 
 --随机的话
 local Says={
